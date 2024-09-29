@@ -108,59 +108,8 @@ finish_script() {
     sudo shutdown -r now
 }
 
-# Function to modify Firefox autoconfig
-modify_firefox_autoconfig() {
-    echo "Modifying Firefox autoconfig for privacy settings and preferences..."
-
-    # Path to Firefox installation directory (adjust this to match your environment)
-    FIREFOX_INSTALL_DIR="/usr/lib/firefox"
-
-    # Create autoconfig.js file in defaults/pref/
-    sudo mkdir -p "$FIREFOX_INSTALL_DIR/defaults/pref/"
-    sudo tee "$FIREFOX_INSTALL_DIR/defaults/pref/autoconfig.js" > /dev/null <<EOL
-pref("general.config.filename", "firefox.cfg");
-pref("general.config.obscure_value", 0); // Disable file obfuscation
-EOL
-
-    # Create firefox.cfg file in the Firefox installation directory
-    sudo tee "$FIREFOX_INSTALL_DIR/firefox.cfg" > /dev/null <<EOL
-// Firefox custom configuration
-
-// Set DuckDuckGo as default search engine
-lockPref("browser.search.defaultenginename", "DuckDuckGo");
-
-// Enable dark theme (assuming dark theme is installed)
-lockPref("extensions.activeThemeID", "firefox-compact-dark@mozilla.org");
-
-// Enable Do Not Track
-lockPref("privacy.donottrackheader.enabled", true);
-
-// Disable telemetry and data reporting
-lockPref("datareporting.healthreport.uploadEnabled", false);
-lockPref("toolkit.telemetry.enabled", false);
-lockPref("toolkit.telemetry.unified", false);
-lockPref("toolkit.telemetry.archive.enabled", false);
-lockPref("toolkit.telemetry.updatePing.enabled", false);
-lockPref("toolkit.telemetry.bhrPing.enabled", false);
-lockPref("toolkit.telemetry.firstShutdownPing.enabled", false);
-
-// Disable Pocket integration
-lockPref("extensions.pocket.enabled", false);
-
-// Disable location services
-lockPref("geo.enabled", false);
-
-// Additional privacy settings (if needed)
-// Disable crash reports
-lockPref("browser.tabs.crashReporting.sendReport", false);
-EOL
-
-    echo "Firefox autoconfig has been updated."
-}
-
 # Main script execution
 set_breeze_dark
-modify_firefox_autoconfig
 configure_touchpad
 
 echo "Please enter your sudo password:"
