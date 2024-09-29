@@ -19,29 +19,40 @@ install_packages() {
     check_error
 }
 
+
 # Function to configure touchpad settings
 configure_touchpad() {
     echo "Configuring touchpad settings..."
 
-    # Find the touchpad device ID
-    TOUCHPAD_ID=$(xinput list | grep -i touchpad | grep -o 'id=[0-9]*' | cut -d'=' -f2)
+    # Check if xinput is installed
+    if ! command -v xinput &> /dev/null; then
+        echo "xinput command not found. Please install it."
+        exit 1
+    fi
+
+    # Attempt to find the touchpad device ID using various possible names
+    TOUCHPAD_ID=$(xinput list | grep -i -E 'touchpad|synaptics|elan|trackpad' | grep -o 'id=[0-9]*' | cut -d'=' -f2)
 
     # Check if the touchpad was found
     if [ -z "$TOUCHPAD_ID" ]; then
-        echo "No touchpad found. Skipping configuration."
-        return
+        echo "No touchpad found. Exiting."
+        xinput list # Display devices to assist with troubleshooting
+        exit 1
     fi
 
+    echo "Touchpad device ID: $TOUCHPAD_ID"
+
     # Enable "Touch to Click"
-    xinput set-prop "$TOUCHPAD_ID" "libinput Tapping Enabled" 1
-    check_error
+    echo "Enabling 'Touch to Click'..."
+    sudo xinput set-prop "$TOUCHPAD_ID" "libinput Tapping Enabled" 1
 
     # Enable "Natural Scrolling"
-    xinput set-prop "$TOUCHPAD_ID" "libinput Natural Scrolling Enabled" 1
-    check_error
+    echo "Enabling 'Natural Scrolling'..."
+    sudo xinput set-prop "$TOUCHPAD_ID" "libinput Natural Scrolling Enabled" 1
 
     echo "Touchpad settings configured."
 }
+
 
 # Function to set global theme to Breeze Dark
 set_breeze_dark() {
