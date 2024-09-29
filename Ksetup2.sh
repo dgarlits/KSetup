@@ -19,7 +19,6 @@ install_packages() {
     check_error
 }
 
-
 # Function to configure touchpad settings
 configure_touchpad() {
     echo "Configuring touchpad settings..."
@@ -27,7 +26,7 @@ configure_touchpad() {
     # Check if xinput is installed
     if ! command -v xinput &> /dev/null; then
         echo "xinput command not found. Please install it."
-        exit 1
+        return
     fi
 
     # Attempt to find the touchpad device ID using various possible names
@@ -35,9 +34,8 @@ configure_touchpad() {
 
     # Check if the touchpad was found
     if [ -z "$TOUCHPAD_ID" ]; then
-        echo "No touchpad found. Exiting."
-        xinput list # Display devices to assist with troubleshooting
-        exit 1
+        echo "No touchpad detected. Moving on..."
+        return
     fi
 
     echo "Touchpad device ID: $TOUCHPAD_ID"
@@ -45,19 +43,21 @@ configure_touchpad() {
     # Enable "Touch to Click"
     echo "Enabling 'Touch to Click'..."
     sudo xinput set-prop "$TOUCHPAD_ID" "libinput Tapping Enabled" 1
+    check_error
 
     # Enable "Natural Scrolling"
     echo "Enabling 'Natural Scrolling'..."
     sudo xinput set-prop "$TOUCHPAD_ID" "libinput Natural Scrolling Enabled" 1
+    check_error
 
     echo "Touchpad settings configured."
 }
-
 
 # Function to set global theme to Breeze Dark
 set_breeze_dark() {
     echo "Setting global theme to Breeze Dark..."
     lookandfeeltool -a org.kde.breezedark.desktop
+    check_error
 }
 
 # Function to remove LibreOffice
@@ -65,6 +65,7 @@ remove_libreoffice() {
     echo "Uninstalling LibreOffice..."
     sudo apt purge libreoffice* -y
     sudo apt autoremove -y
+    check_error
 }
 
 # Function to install OnlyOffice Desktop Editors
@@ -95,13 +96,14 @@ add_flatpak_repo() {
 enable_ufw() {
     echo "Enabling UFW firewall..."
     sudo ufw enable
+    check_error
 }
 
 # Function to install drivers
 install_drivers() {
     echo "Automatically installing drivers..."
     sudo ubuntu-drivers autoinstall
-    # Remove clear to keep the output visible
+    check_error
 }
 
 # Function to run system info and finish
