@@ -122,7 +122,7 @@ install_drivers() {
 # Function to run system info and finish
 finish_script() {
     echo "Cleaning up unused packages..."
-    sudo nala autoclean
+    sudo apt autoclean
     check_error
 
     echo "Displaying system info (neofetch)..."
