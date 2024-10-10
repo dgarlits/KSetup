@@ -24,7 +24,7 @@ install_packages() {
     check_error
 
     echo "Installing additional utilities and packages..."
-    sudo nala install neofetch glances nvtop btop ddgr cool-retro-term kubuntu-restricted-extras ufw timeshift flatpak fonts-noto fonts-ubuntu fonts-dejavu-core aptitude gdebi synaptic -y
+    sudo nala install neofetch net-tools nload glances nvtop btop ddgr cool-retro-term kubuntu-restricted-extras ufw timeshift flatpak fonts-noto fonts-ubuntu fonts-dejavu-core aptitude gdebi synaptic -y
     check_error
     echo "All packages installed successfully."
 }
